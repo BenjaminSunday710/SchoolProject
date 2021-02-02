@@ -28,6 +28,7 @@ namespace School.Infrastructures.NHibernate.Queries
                     model.Address = address;
                     model.Gender = gender;
                     model.Subjects = subjects;
+                    session.Save(model);
                     transaction.Commit();
                 }
             }
@@ -45,23 +46,18 @@ namespace School.Infrastructures.NHibernate.Queries
             }
         }
 
-        public void DeleteSchoolClass(int teacherId)
+        public void DeleteTeacher(int teacherId)
         {
-            SchoolClassModel schoolClass = new SchoolClassModel();
+            TeacherModel teacher = new TeacherModel();
             using (var session = SessionFactory.OpenSession())
             {
                 using (var transaction = session.BeginTransaction())
                 {
-                    schoolClass = session.Get<SchoolClassModel>(teacherId);
-                    session.Delete(schoolClass);
+                    teacher = session.Get<TeacherModel>(teacherId);
+                    session.Delete(teacher);
                     transaction.Commit();
                 }
             }
-        }
-
-        public void DeleteSchoolClass(TeacherModel model)
-        {
-            throw new NotImplementedException();
         }
 
         public SchoolModel GetSchool(int teacherId)
@@ -85,9 +81,20 @@ namespace School.Infrastructures.NHibernate.Queries
             return subjects;
         }
 
-        public void UpdateSchoolClass(int id, TeacherModel currentModel)
+        public void UpdateTeacher(int teacherId, TeacherModel currentModel)
         {
-            throw new NotImplementedException();
+            TeacherModel prevModel = new TeacherModel();
+            using (var session = SessionFactory.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    prevModel = session.Get<TeacherModel>(teacherId);
+                    prevModel = currentModel;
+                    session.Update(prevModel);
+                    session.Save(prevModel);
+                    transaction.Commit();
+                }
+            }
         }
     }
 }

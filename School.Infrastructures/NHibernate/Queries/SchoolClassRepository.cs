@@ -17,17 +17,43 @@ namespace School.Infrastructures.NHibernate.Queries
 
         public void CreateSchoolClass(string name, SchoolModel school)
         {
-            throw new NotImplementedException();
+            SchoolClassModel model = new SchoolClassModel();
+            using (var session = SessionFactory.OpenSession())
+            {
+                using (var transaction=session.BeginTransaction())
+                {
+                    model.Name = name;
+                    model.School = school;
+                    session.Save(model);
+                    transaction.Commit();
+                }
+            }
         }
 
         public void DeleteSchoolClass(SchoolClassModel model)
         {
-            throw new NotImplementedException();
+            using (var session = SessionFactory.OpenSession())
+            {
+                using (var transaction=session.BeginTransaction())
+                {
+                    session.Delete(model);
+                    transaction.Commit();
+                }
+            }
         }
 
-        public void DeleteSchoolClass(int id)
+        public void DeleteSchoolClass(int schoolClassId)
         {
-            throw new NotImplementedException();
+            SchoolClassModel schoolClass = new SchoolClassModel();
+            using (var session=SessionFactory.OpenSession())
+            {
+                using (var transaction=session.BeginTransaction())
+                {
+                    schoolClass = session.Get<SchoolClassModel>(schoolClassId);
+                    session.Delete(schoolClass);
+                    transaction.Commit();
+                }  
+            }
         }
 
         public int GetNumberofStudents(int schoolClassId)
@@ -82,10 +108,14 @@ namespace School.Infrastructures.NHibernate.Queries
             SchoolClassModel prevModel = new SchoolClassModel();
             using (var session=SessionFactory.OpenSession())
             {
-                prevModel = session.Get<SchoolClassModel>(schoolClassId);
-                prevModel = currentModel;
-                Update(prevModel);
-                session.Save(prevModel);
+                using (var transaction=session.BeginTransaction())
+                {
+                    prevModel = session.Get<SchoolClassModel>(schoolClassId);
+                    prevModel = currentModel;
+                    Update(prevModel);
+                    session.Save(prevModel);
+                    transaction.Commit();
+                }
             }
         }
     }

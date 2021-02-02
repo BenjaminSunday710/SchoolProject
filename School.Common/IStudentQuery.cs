@@ -9,5 +9,9 @@ namespace School.Common
     {
         SchoolModel GetSchool(int studentId);
         SchoolClassModel GetClass(int studentId);
+        void CreateStudent(string firstName, string lastName, SchoolClassModel schoolClass, Gender gender, string address, SchoolModel school);
+        void UpdateStudent(int id, StudentModel currentModel);
+        void DeleteStudent(StudentModel model);
+        void DeleteStudent(int id);
     }
 }
